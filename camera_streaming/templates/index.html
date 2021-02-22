@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>影像串流</title>
+  
+  <!-- Bootstrap CSS -->
+  {{ bootstrap.load_css() }}
+  <!-- 插入jquery -->
+  <script src="{{url_for('static', filename='jquery-3.4.1.min.js')}}"></script>
+  <style type="text/css">
+    .P1 {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      z-index: -1;
+    }
+    .P2 {
+      position: absolute;
+      top: 25px;
+      left: 40px;
+      z-index: 0;
+    }
+    </style>
+
+</head>
+
+<body>
+
+  <div class="ml-4 mr-4 mt-3">
+
+    <h1>影像串流</h1>
+    <h5>Host IP: {{ host_ip }}</h5>
+    <h5>機器人像素座標: (<span id="center"></span>)</h5>
+    <h5>機器人地圖座標: (<span id="point_axis"></span>)</h5>
+
+
+    <div class="row">
+      <div class="col mt-2">
+        <h3>原始影像</h3>
+        <div style="position:relative;height:330px;width:360px;">
+          <img class="P1" src="{{ url_for('static', filename='background.png')}}" width="360">
+          <img class="P2" src="{{ url_for('video_feed') }}" width="320">
+        </div>
+      </div>
+      <div class="col mt-2">
+        <h3>街道地圖</h3>
+        <div style="position:relative;height:330px;width:360px;">
+          <img class="P1" src="{{ url_for('static', filename='background.png')}}" width="360">
+          <img class="P2" src="{{ url_for('steam_map') }}" width="320">
+        </div>
+      </div>
+      <!--div class="col mt-2">
+        <h3>TEST</h3>
+        <div style="position:relative;height:330px;width:360px;">
+          <img class="P1" src="{{ url_for('static', filename='background.png')}}" width="360">
+          <img class="P2" src="{{ url_for('steam_test') }}" width="320">
+        </div>
+      </div-->
+    </div>
+    
+  </div>
+
+  {{ bootstrap.load_js() }}
+  <script>
+    setInterval(function(){
+      $.ajax({
+        url: "point",
+        type: "POST",
+        dataType: "json",
+        
+        success: function (data) {
+          $("#center").html(data.center.join(", "));
+          $("#point_axis").html(data.point_axis.join(", "));
+        }
+ 
+      })
+    }, 1000);
+    
+  </script>
+</body>
+
+</html>
